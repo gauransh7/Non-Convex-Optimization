@@ -504,7 +504,6 @@ void Function::generate_comp() {
 }
 
 void Function::init(const Array<const ExprSymbol>& x, const ExprNode& y, const char* name) {
-
 	df=NULL;
 	_def_domain=NULL;
 	comp=NULL;
