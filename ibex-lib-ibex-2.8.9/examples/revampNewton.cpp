@@ -3,40 +3,40 @@
 #include <fstream>
 #include <string>
 #include "ibex.h"
-#include "eigen/Eigen/Dense"
-#include "eigen/Eigen/QR"
+// #include "eigen/Eigen/Dense"
+// #include "eigen/Eigen/QR"
 
 using namespace std;
 using namespace ibex;
 
-// this function convert std c++ vector to Eigen vector
-Eigen::VectorXd ConvertToEigenVector(vector<double> v)
-{
-    double *ptr_data = &v[0];
-    Eigen::VectorXd v2 = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(v.data(), v.size());
-    return v2;
-}
-// this function convert Eigen vector to std c++ vector
-vector<double> ConvertTo1dVector(Eigen::VectorXd mat)
-{
-    vector<double> vec(mat.data(), mat.data() + mat.rows() * mat.cols());
-    return vec;
-}
+// // this function convert std c++ vector to Eigen vector
+// Eigen::VectorXd ConvertToEigenVector(vector<double> v)
+// {
+//     double *ptr_data = &v[0];
+//     Eigen::VectorXd v2 = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(v.data(), v.size());
+//     return v2;
+// }
+// // this function convert Eigen vector to std c++ vector
+// vector<double> ConvertTo1dVector(Eigen::VectorXd mat)
+// {
+//     vector<double> vec(mat.data(), mat.data() + mat.rows() * mat.cols());
+//     return vec;
+// }
 
-// this function convert Eigen Matrix to std c++ 2d vector
-vector<vector<double>> ConvertTo2dVector(Eigen::MatrixXd m)
-{
+// // this function convert Eigen Matrix to std c++ 2d vector
+// vector<vector<double>> ConvertTo2dVector(Eigen::MatrixXd m)
+// {
 
-    std::vector<std::vector<double>> v;
+//     std::vector<std::vector<double>> v;
 
-    for (int i = 0; i < m.rows(); ++i)
-    {
-        const double *begin = &m.row(i).data()[0];
-        v.push_back(std::vector<double>(begin, begin + m.cols()));
-    }
+//     for (int i = 0; i < m.rows(); ++i)
+//     {
+//         const double *begin = &m.row(i).data()[0];
+//         v.push_back(std::vector<double>(begin, begin + m.cols()));
+//     }
 
-    return v;
-}
+//     return v;
+// }
 
 vector<vector<double>> ConvertIbexMatrixTo2DVector(ibex::Matrix m){
     int n = m.nb_rows();
@@ -49,14 +49,14 @@ vector<vector<double>> ConvertIbexMatrixTo2DVector(ibex::Matrix m){
     return dummyHessian;
 }
 
-// this function convert std c++ 2d vector to Eigen Matrix
-Eigen::MatrixXd ConvertToEigenMatrix(std::vector<std::vector<double>> data)
-{
-    Eigen::MatrixXd eMatrix(data.size(), data[0].size());
-    for (int i = 0; i < data.size(); ++i)
-        eMatrix.row(i) = Eigen::VectorXd::Map(&data[i][0], data[0].size());
-    return eMatrix;
-}
+// // this function convert std c++ 2d vector to Eigen Matrix
+// Eigen::MatrixXd ConvertToEigenMatrix(std::vector<std::vector<double>> data)
+// {
+//     Eigen::MatrixXd eMatrix(data.size(), data[0].size());
+//     for (int i = 0; i < data.size(); ++i)
+//         eMatrix.row(i) = Eigen::VectorXd::Map(&data[i][0], data[0].size());
+//     return eMatrix;
+// }
 
 // this function return norm of vector (L2)
 double normOfVector(Vector old_vec, Vector new_vec, int n, int iter)
@@ -138,21 +138,21 @@ double minEigenValueIntervalMatrix(IntervalMatrix &Im)
     return min_eigen;
 }
 
-bool checkCholesky(Matrix hessian){
-    vector<vector<double>> dummyHessian = ConvertIbexMatrixTo2DVector(hessian);
-    Eigen::LLT<Eigen::MatrixXd> lltOfA(ConvertToEigenMatrix(dummyHessian)); // compute the Cholesky decomposition of Hessian
-    Eigen::ComputationInfo m_info = lltOfA.info();
-    cout << "Cholesky Results : " << m_info << endl;
-    if (m_info == 1)
-    {
-        cout << "---Encountered a Non-Postive Definite Matrix.---" << endl;
-        return true;
-        // return 0;
-    }
-    else{
-        return false;
-    }
-}
+// bool checkCholesky(Matrix hessian){
+//     vector<vector<double>> dummyHessian = ConvertIbexMatrixTo2DVector(hessian);
+//     Eigen::LLT<Eigen::MatrixXd> lltOfA(ConvertToEigenMatrix(dummyHessian)); // compute the Cholesky decomposition of Hessian
+//     Eigen::ComputationInfo m_info = lltOfA.info();
+//     cout << "Cholesky Results : " << m_info << endl;
+//     if (m_info == 1)
+//     {
+//         cout << "---Encountered a Non-Postive Definite Matrix.---" << endl;
+//         return true;
+//         // return 0;
+//     }
+//     else{
+//         return false;
+//     }
+// }
 
 Matrix ModifyHessianGerschgorin(Matrix hessian){
     double min_eigen = POS_INFINITY;
@@ -311,7 +311,7 @@ int main(int argc, char **argv)
         cout << "\n";
         hessian = HessianMatrix(df, xk);
         cout << "---Computed Hessian---" << endl;
-        bool cholresult = checkCholesky(hessian);
+        // bool cholresult = checkCholesky(hessian);
         grad = gradVector(df, xk);
         cout << "---Computed Gradient---" << endl;
         for (int i = 0; i < n; i++)
@@ -334,7 +334,7 @@ int main(int argc, char **argv)
             a = 1;
             cout << "Modifieng Hessian" << endl;
             hessian = ModifyHessian(func, fnc_param, xk, 1.0, hessian);
-            cholresult = checkCholesky(hessian);
+            // cholresult = checkCholesky(hessian);
             for (int i = 0; i < n; i++)
             {
                 grad[i] = -grad[i];
